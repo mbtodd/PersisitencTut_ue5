@@ -34,9 +34,9 @@ void APersistenceTut_ue5GameMode::PostLogin(APlayerController* NewPlayer)
 
 	FString JsonString;
 	FPlayerData PlayerData;
-	PlayerData.Xcoord = 1111.0f;
-	PlayerData.Ycoord = 2222.0f;
-	PlayerData.Zcoord = 3333.0f;
+	PlayerData.Xcoord = 20.0f;
+	PlayerData.Ycoord = 30.0f;
+	PlayerData.Zcoord = 40.0f;
 	
 	FJsonObjectConverter::UStructToJsonObjectString(PlayerData, JsonString); 
 	Request ->SetContentAsString(JsonString);
