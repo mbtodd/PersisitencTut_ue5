@@ -4,11 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "http.h"
 #include "PersistancePlayerController.generated.h"
 
-/**
- * 
- */
+USTRUCT(BlueprintType)
+struct FPlayerData
+{
+	GENERATED_BODY()
+	UPROPERTY()
+	bool isvalid = false;
+	UPROPERTY()
+	float Xcoord = 0.0f;
+	UPROPERTY()
+	float Ycoord = 0.0f;
+	UPROPERTY()
+	float Zcoord = 0.0f;
+};
+
+
 UCLASS()
 class PERSISTENCETUT_UE5_API APersistancePlayerController : public APlayerController
 {
@@ -17,5 +30,11 @@ public:
 	APersistancePlayerController();
 
 	virtual void BeginPlay() override;
+
+	void HandleServerEntry();
+
+protected:
+	FHttpModule* Http;
+	void OnProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool Successful);
 	
 };
