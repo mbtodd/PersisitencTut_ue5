@@ -15,5 +15,7 @@ class PERSISTENCETUT_UE5_API APersistancePlayerController : public APlayerContro
 	GENERATED_BODY()
 public:
 	APersistancePlayerController();
+
+	virtual void BeginPlay() override;
 	
 };

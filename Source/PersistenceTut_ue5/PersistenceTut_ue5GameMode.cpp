@@ -44,7 +44,7 @@ void APersistenceTut_ue5GameMode::PostLogin(APlayerController* NewPlayer)
 	Request ->SetContentAsString(JsonString);
 	UE_LOG(LogTemp, Warning, TEXT("Json String: %s"), *JsonString);
 
-	Request ->ProcessRequest(); 
+	// Request ->ProcessRequest(); 
 
 	// Get Request through API passing in PID
 
