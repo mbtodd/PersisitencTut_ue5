@@ -14,6 +14,8 @@ struct FPlayerData
 	UPROPERTY()
 	bool isvalid = false;
 	UPROPERTY()
+	int pid = -1;
+	UPROPERTY()
 	float Xcoord = 0.0f;
 	UPROPERTY()
 	float Ycoord = 0.0f;
