@@ -18,7 +18,7 @@ APersistenceTut_ue5GameMode::APersistenceTut_ue5GameMode()
 
 void APersistenceTut_ue5GameMode::PostLogin(APlayerController* NewPlayer)
 {
-	Super::PostLogin(NewPlayer);
+	// Super::PostLogin(NewPlayer);
 
 	if (APersistancePlayerController* PC = Cast<APersistancePlayerController>(NewPlayer))
 	{

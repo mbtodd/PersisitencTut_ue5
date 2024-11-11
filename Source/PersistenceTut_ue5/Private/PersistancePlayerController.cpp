@@ -4,6 +4,8 @@
 #include "PersistancePlayerController.h"
 
 #include "JsonObjectConverter.h"
+#include "PersistenceTut_ue5/PersistenceTut_ue5GameMode.h"
+
 
 APersistancePlayerController::APersistancePlayerController()
 {
@@ -31,7 +33,7 @@ void APersistancePlayerController::HandleServerEntry()
 
 
 
-	FString PID = "23";
+	FString PID = "1234";
 	
 	
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
@@ -41,18 +43,7 @@ void APersistancePlayerController::HandleServerEntry()
 	Request ->SetVerb("GET");
 	Request ->SetHeader(TEXT("Content-Type"), "application/json");
 
-	/*FString JsonString;
-	FPlayerData PlayerData;
-	PlayerData.isvalid = true;
-	PlayerData.Xcoord = 121.0f;
-	PlayerData.Ycoord = 323.0f;
-	PlayerData.Zcoord = 424.0f;
-	
-	FJsonObjectConverter::UStructToJsonObjectString(PlayerData, JsonString); 
-	Request ->SetContentAsString(JsonString);
-	UE_LOG(LogTemp, Warning, TEXT("Json String: %s"), *JsonString);*/
 
-	
 	// Get Request through API passing in PID
 
 		Request ->ProcessRequest(); 
@@ -62,14 +53,58 @@ void APersistancePlayerController::HandleServerEntry()
 void APersistancePlayerController::OnProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response,
 	bool Successful)
 {
+	FVector Location = FVector::ZeroVector;
+	Location.Z = 400.0f;
+	
 	if (Successful)
 	{
 		 // setup pawn
 		UE_LOG(LogTemp, Warning, TEXT("SUCCESS %s"), *Response->GetContentAsString());
+
+		FPlayerData PlayerData = ConvertToPlayerData(Response->GetContentAsString());
+		if (PlayerData.isvalid)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SUCCESS %f"), PlayerData.Zcoord);
+		}
+		
+		if (APersistenceTut_ue5GameMode* GM = GetWorld()->GetAuthGameMode<APersistenceTut_ue5GameMode>())
+		{
+			FActorSpawnParameters SpawnParameters;
+			SpawnParameters.Owner = this;
+			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			
+			if (APawn* NewPawn = GetWorld()->SpawnActor<APawn>(GM->DefaultPawnClass, Location, FRotator::ZeroRotator ,SpawnParameters))
+			{
+				Possess(NewPawn);
+			}
+		}
 	}
 	else
 	{
+		if (APersistenceTut_ue5GameMode* GM = GetWorld()->GetAuthGameMode<APersistenceTut_ue5GameMode>())
+		{
+			FActorSpawnParameters SpawnParameters;
+			SpawnParameters.Owner = this;
+			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			
+			if (APawn* NewPawn = GetWorld()->SpawnActor<APawn>(GM->DefaultPawnClass, Location, FRotator::ZeroRotator ,SpawnParameters))
+			{
+				Possess(NewPawn);
+			}
+		}
 		// spawn new pawn at default location and create entry in data table
 		UE_LOG(LogTemp, Warning, TEXT("FAILED"));
 	}
+}
+
+FPlayerData APersistancePlayerController::ConvertToPlayerData(const FString& ResponseString)
+{
+	FPlayerData PlayerData;
+	if (ResponseString.Contains("timestamp"))
+	{
+		FJsonObjectConverter::JsonObjectStringToUStruct(*ResponseString, &PlayerData, 0, 0);
+	}
+
+	return PlayerData;
 }

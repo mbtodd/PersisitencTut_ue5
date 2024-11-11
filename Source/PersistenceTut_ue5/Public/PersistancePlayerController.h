@@ -38,5 +38,8 @@ public:
 protected:
 	FHttpModule* Http;
 	void OnProcessRequestComplete(FHttpRequestPtr Request, FHttpResponsePtr Response, bool Successful);
+
+	
+	FPlayerData ConvertToPlayerData(const FString& ResponseString);
 	
 };
